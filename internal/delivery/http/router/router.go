@@ -2,6 +2,7 @@ package router
 
 import (
 	"infared-backend/internal/delivery/http/handler"
+	"infared-backend/internal/delivery/http/middleware"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,7 +22,12 @@ func SetupRouter(userHandler *handler.UserHandler) *gin.Engine {
 		auth := v1.Group("/auth")
 		{
 			auth.POST("/login", userHandler.Login)
-			auth.POST("/register", userHandler.RegisterRelawan)
+		}
+
+		protected := v1.Group("")
+		protected.Use(middleware.AuthGuard())
+		{
+			protected.POST("/auth/register", middleware.RoleGuard("admin"), userHandler.RegisterRelawan)
 		}
 	}
 
