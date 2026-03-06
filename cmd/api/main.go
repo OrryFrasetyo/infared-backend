@@ -14,12 +14,14 @@ func main() {
 	defer db.Close()
 
 	userRepo := repository.NewUserRepository(db)
-
 	userUsecase := usecase.NewUserUsecase(userRepo)
-
 	userHandler := handler.NewUserHandler(userUsecase)
 
-	r := router.SetupRouter(userHandler)
+	itemRepo := repository.NewItemRepository(db)
+	itemUsecase := usecase.NewItemUsecase(itemRepo)
+	itemHandler := handler.NewItemHandler(itemUsecase)
+
+	r := router.SetupRouter(userHandler, itemHandler)
 
 	log.Println("🚀 Menjalankan server InfaRed di http://localhost:8080")
 	if err := r.Run(":8080"); err != nil {

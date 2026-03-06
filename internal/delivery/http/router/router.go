@@ -8,7 +8,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(userHandler *handler.UserHandler) *gin.Engine {
+func SetupRouter(userHandler *handler.UserHandler, itemHandler *handler.ItemHandler) *gin.Engine {
 	r := gin.Default()
 
 	r.GET("/ping", func(c *gin.Context) {
@@ -28,6 +28,9 @@ func SetupRouter(userHandler *handler.UserHandler) *gin.Engine {
 		protected.Use(middleware.AuthGuard())
 		{
 			protected.POST("/auth/register", middleware.RoleGuard("admin"), userHandler.RegisterRelawan)
+
+			protected.POST("/items", middleware.RoleGuard("admin"), itemHandler.CreateItem)
+			protected.GET("/items", itemHandler.GetAllItems)
 		}
 	}
 
