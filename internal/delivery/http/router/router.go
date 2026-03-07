@@ -8,7 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(userHandler *handler.UserHandler, itemHandler *handler.ItemHandler) *gin.Engine {
+func SetupRouter(
+	userHandler *handler.UserHandler,
+	itemHandler *handler.ItemHandler,
+	requestHandler *handler.RequestHandler,
+) *gin.Engine {
 	r := gin.Default()
 
 	r.GET("/ping", func(c *gin.Context) {
@@ -31,6 +35,8 @@ func SetupRouter(userHandler *handler.UserHandler, itemHandler *handler.ItemHand
 
 			protected.POST("/items", middleware.RoleGuard("admin"), itemHandler.CreateItem)
 			protected.GET("/items", itemHandler.GetAllItems)
+
+			protected.POST("/requests/chat", requestHandler.ChatToAI)
 		}
 	}
 

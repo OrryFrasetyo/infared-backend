@@ -6,6 +6,7 @@ import (
 	"infared-backend/internal/delivery/http/router"
 	"infared-backend/internal/repository"
 	"infared-backend/internal/usecase"
+	"infared-backend/pkg/gemini"
 	"log"
 )
 
@@ -21,7 +22,16 @@ func main() {
 	itemUsecase := usecase.NewItemUsecase(itemRepo)
 	itemHandler := handler.NewItemHandler(itemUsecase)
 
-	r := router.SetupRouter(userHandler, itemHandler)
+	aiClient, err := gemini.NewGeminiClient()
+	if err != nil {
+		log.Fatalf("Gagal inisiasi Gemini: %v", err)
+	}
+
+	requestRepo := repository.NewRequestRepository(db)
+	requestUsecase := usecase.NewRequestUsecase(requestRepo, itemRepo, aiClient)
+	requestHandler := handler.NewRequestHandler(requestUsecase)
+
+	r := router.SetupRouter(userHandler, itemHandler, requestHandler)
 
 	log.Println("🚀 Menjalankan server InfaRed di http://localhost:8080")
 	if err := r.Run(":8080"); err != nil {
