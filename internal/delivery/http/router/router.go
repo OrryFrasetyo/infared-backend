@@ -37,6 +37,8 @@ func SetupRouter(
 			protected.GET("/items", itemHandler.GetAllItems)
 
 			protected.POST("/requests/chat", requestHandler.ChatToAI)
+
+			protected.GET("/requests", requestHandler.GetAllRequests)
 		}
 	}
 

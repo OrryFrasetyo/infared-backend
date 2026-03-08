@@ -42,3 +42,13 @@ func (h *RequestHandler) ChatToAI(c *gin.Context) {
 
 	utils.SuccessResponse(c, http.StatusCreated, "Permintaan logistik berhasil diproses oleh AI", result)
 }
+
+func (h *RequestHandler) GetAllRequests(c *gin.Context) {
+	requests, err := h.requestUsecase.GetAllRequests(c.Request.Context())
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Gagal mengambil data laporan logistik", err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "Berhasil mengambil data laporan logistik", requests)
+}

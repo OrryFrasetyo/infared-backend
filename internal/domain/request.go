@@ -37,3 +37,16 @@ type RequestItem struct {
 	UpdatedAt time.Time    `json:"updated_at" db:"updated_at"`
 	DeletedAt *time.Time   `json:"deleted_at,omitempty" db:"deleted_at"`
 }
+
+type RequestItemDetail struct {
+	RequestItem
+	ItemName string `json:"item_name" db:"item_name"`
+	ItemUnit string `json:"item_unit" db:"item_unit"`
+}
+
+type RequestDetail struct {
+	LogisticsRequest
+	PoskoName string              `json:"posko_name" db:"posko_name"`
+	UserName  string              `json:"user_name" db:"user_name"`
+	Items     []RequestItemDetail `json:"items"` 
+}

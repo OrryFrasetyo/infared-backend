@@ -15,6 +15,7 @@ import (
 
 type RequestUsecase interface {
 	ProcessChat(ctx context.Context, userID, poskoID, promptText string) (*domain.LogisticsRequest, error)
+	GetAllRequests(ctx context.Context) ([]domain.RequestDetail, error)
 }
 
 type requestUsecase struct {
@@ -107,4 +108,8 @@ func (u *requestUsecase) ProcessChat(ctx context.Context, userID, poskoID, promp
 	}
 
 	return newRequest, nil
+}
+
+func (u *requestUsecase) GetAllRequests(ctx context.Context) ([]domain.RequestDetail, error) {
+	return u.requestRepo.GetAllWithDetails(ctx)
 }

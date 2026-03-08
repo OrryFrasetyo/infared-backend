@@ -9,6 +9,7 @@ import (
 
 type RequestRepository interface {
 	CreateRequestWithItems(ctx context.Context, req *domain.LogisticsRequest, items []domain.RequestItem) error
+	GetAllWithDetails(ctx context.Context) ([]domain.RequestDetail, error)
 }
 
 type requestRepository struct {
@@ -42,10 +43,50 @@ func (r *requestRepository) CreateRequestWithItems(ctx context.Context, req *dom
 	for _, item := range items {
 		_, err = tx.NamedExecContext(ctx, queryItem, item)
 		if err != nil {
-			tx.Rollback() 
+			tx.Rollback()
 			return err
 		}
 	}
 
 	return tx.Commit()
+}
+
+func (r *requestRepository) GetAllWithDetails(ctx context.Context) ([]domain.RequestDetail, error) {
+	var requests []domain.RequestDetail
+
+	queryHeader := `
+		SELECT 
+			r.*, 
+			p.name AS posko_name, 
+			u.name AS user_name
+		FROM logistics_requests r
+		JOIN posko p ON r.posko_id = p.id
+		JOIN users u ON r.requested_by = u.id
+		ORDER BY r.created_at DESC
+	`
+	err := r.db.SelectContext(ctx, &requests, queryHeader)
+	if err != nil {
+		return nil, err
+	}
+
+	queryItems := `
+		SELECT 
+			ri.*, 
+			i.name AS item_name, 
+			i.unit AS item_unit
+		FROM request_items ri
+		JOIN items i ON ri.item_id = i.id
+		WHERE ri.request_id = $1
+	`
+
+	for i, req := range requests {
+		var items []domain.RequestItemDetail
+		err = r.db.SelectContext(ctx, &items, queryItems, req.ID)
+		if err != nil {
+			return nil, err
+		}
+		requests[i].Items = items
+	}
+
+	return requests, nil
 }
