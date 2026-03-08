@@ -12,6 +12,7 @@ import (
 type UserRepository interface {
 	Create(ctx context.Context, user *domain.User) error
 	GetByEmail(ctx context.Context, email string) (*domain.User, error)
+	GetAll(ctx context.Context) ([]domain.User, error)
 }
 
 type userRepository struct {
@@ -43,4 +44,18 @@ func (r *userRepository) GetByEmail(ctx context.Context, email string) (*domain.
 		return nil, err
 	}
 	return &user, nil
+}
+
+func (r *userRepository) GetAll(ctx context.Context) ([]domain.User, error) {
+	users := []domain.User{}
+
+	query := `
+		SELECT id, name, email, role, created_at, updated_at 
+		FROM users 
+		WHERE deleted_at IS NULL 
+		ORDER BY created_at DESC
+	`
+
+	err := r.db.SelectContext(ctx, &users, query)
+	return users, err
 }

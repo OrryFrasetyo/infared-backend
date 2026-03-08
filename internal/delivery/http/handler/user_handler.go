@@ -63,3 +63,13 @@ func (h *UserHandler) RegisterRelawan(c *gin.Context) {
 
 	utils.SuccessResponse(c, http.StatusCreated, "Akun relawan berhasil dibuat", nil)
 }
+
+func (h *UserHandler) GetAllUsers(c *gin.Context) {
+	users, err := h.userUsecase.GetAllUsers(c.Request.Context())
+	if err != nil {
+		utils.ErrorResponse(c, http.StatusInternalServerError, "Gagal mengambil daftar pengguna", err.Error())
+		return
+	}
+
+	utils.SuccessResponse(c, http.StatusOK, "Berhasil mengambil daftar pengguna", users)
+}

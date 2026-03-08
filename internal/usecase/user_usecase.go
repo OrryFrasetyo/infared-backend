@@ -12,6 +12,7 @@ import (
 type UserUsecase interface {
 	RegisterRelawan(ctx context.Context, name, email, plainPassword string) error
 	Login(ctx context.Context, email, plainPassword string) (string, *domain.User, error)
+	GetAllUsers(ctx context.Context) ([]domain.User, error)
 }
 
 type userUsecase struct {
@@ -57,4 +58,8 @@ func (u *userUsecase) Login(ctx context.Context, email, plainPassword string) (s
 	}
 
 	return token, user, nil
+}
+
+func (u *userUsecase) GetAllUsers(ctx context.Context) ([]domain.User, error) {
+	return u.userRepo.GetAll(ctx)
 }

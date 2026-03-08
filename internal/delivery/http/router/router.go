@@ -32,6 +32,7 @@ func SetupRouter(
 		protected.Use(middleware.AuthGuard())
 		{
 			protected.POST("/auth/register", middleware.RoleGuard("admin"), userHandler.RegisterRelawan)
+			protected.GET("/users", middleware.RoleGuard("admin"), userHandler.GetAllUsers)
 
 			protected.POST("/items", middleware.RoleGuard("admin"), itemHandler.CreateItem)
 			protected.GET("/items", itemHandler.GetAllItems)
