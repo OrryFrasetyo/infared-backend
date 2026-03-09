@@ -12,6 +12,7 @@ func SetupRouter(
 	userHandler *handler.UserHandler,
 	itemHandler *handler.ItemHandler,
 	requestHandler *handler.RequestHandler,
+	poskoHandler *handler.PoskoHandler,
 ) *gin.Engine {
 	r := gin.Default()
 
@@ -40,6 +41,8 @@ func SetupRouter(
 			protected.POST("/requests/chat", requestHandler.ChatToAI)
 
 			protected.GET("/requests", requestHandler.GetAllRequests)
+
+			protected.GET("/posko", poskoHandler.GetAllPoskos)
 		}
 	}
 

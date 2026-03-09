@@ -31,7 +31,16 @@ func main() {
 	requestUsecase := usecase.NewRequestUsecase(requestRepo, itemRepo, aiClient)
 	requestHandler := handler.NewRequestHandler(requestUsecase)
 
-	r := router.SetupRouter(userHandler, itemHandler, requestHandler)
+	poskoRepo := repository.NewPoskoRepository(db)
+	poskoUsecase := usecase.NewPoskoUsecase(poskoRepo)
+	poskoHandler := handler.NewPoskoHandler(poskoUsecase)
+
+	r := router.SetupRouter(
+		userHandler,
+		itemHandler,
+		requestHandler,
+		poskoHandler,
+	)
 
 	log.Println("🚀 Menjalankan server InfaRed di http://localhost:8080")
 	if err := r.Run(":8080"); err != nil {
