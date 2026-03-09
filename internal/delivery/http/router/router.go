@@ -13,6 +13,7 @@ func SetupRouter(
 	itemHandler *handler.ItemHandler,
 	requestHandler *handler.RequestHandler,
 	poskoHandler *handler.PoskoHandler,
+	inventoryHandler *handler.InventoryHandler,
 ) *gin.Engine {
 	r := gin.Default()
 
@@ -43,6 +44,8 @@ func SetupRouter(
 			protected.GET("/requests", requestHandler.GetAllRequests)
 
 			protected.GET("/posko", poskoHandler.GetAllPoskos)
+
+			protected.GET("/posko/:id/inventory", inventoryHandler.GetInventory)
 		}
 	}
 

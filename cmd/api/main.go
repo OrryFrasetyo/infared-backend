@@ -35,11 +35,16 @@ func main() {
 	poskoUsecase := usecase.NewPoskoUsecase(poskoRepo)
 	poskoHandler := handler.NewPoskoHandler(poskoUsecase)
 
+	inventoryRepo := repository.NewInventoryRepository(db)
+	inventoryUsecase := usecase.NewInventoryUsecase(inventoryRepo)
+	inventoryHandler := handler.NewInventoryHandler(inventoryUsecase)
+
 	r := router.SetupRouter(
 		userHandler,
 		itemHandler,
 		requestHandler,
 		poskoHandler,
+		inventoryHandler,
 	)
 
 	log.Println("🚀 Menjalankan server InfaRed di http://localhost:8080")

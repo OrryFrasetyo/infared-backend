@@ -20,3 +20,9 @@ type PoskoInventory struct {
 	UpdatedAt time.Time  `json:"updated_at" db:"updated_at"`
 	DeletedAt *time.Time `json:"deleted_at,omitempty" db:"deleted_at"`
 }
+
+type PoskoInventoryDetail struct {
+	PoskoInventory
+	ItemName string `json:"item_name" db:"item_name"`
+	ItemUnit string `json:"item_unit" db:"item_unit"`
+}
